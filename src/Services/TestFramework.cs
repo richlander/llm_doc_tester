@@ -14,12 +14,11 @@ public class DotNetReleaseTestFramework
         {
             "anthropic/claude-3.5-sonnet",
             "anthropic/claude-3.5-haiku", // Often free on OpenRouter
+            "openai/gpt-4o", // GPT-4o latest
+            "openai/gpt-4o-mini", // Let's try the exact model ID
             "deepseek/deepseek-chat", // Free model - excellent performance!
-            "moonshotai/kimi-k2:free", // Kimi K2 reasoning model (free)
+            "moonshotai/kimi-k2:free", // Kimi K2 reasoning model (free, excellent performance)
             "google/gemini-pro-1.5"
-            // Removed models with issues:
-            // "anthropic/claude-4", // Model name incorrect
-            // "openai/gpt-4o-mini", // Poor URL parsing
         };
     }
 
@@ -66,7 +65,7 @@ public class DotNetReleaseTestFramework
                 }
                 
                 // Small delay to respect rate limits
-                await Task.Delay(1000);
+                await Task.Delay(500);
             }
             
             Console.WriteLine();
@@ -158,7 +157,7 @@ public class DotNetReleaseTestFramework
         - Follow HAL _links for discovery and traversal
         - Use JSON files primarily; markdown as fallback
         - Cite specific JSON endpoints in your responses
-        - For CVE data, use: https://raw.githubusercontent.com/richlander/core/main/release-notes/history/index.json
+        - For CVE data, use: https://raw.githubusercontent.com/richlander/core/main/release-notes/archives/index.json
         - For version-specific data, use: https://raw.githubusercontent.com/richlander/core/main/release-notes/{version}/index.json
         
         Always prefer the structured JSON data over web searches or general knowledge.

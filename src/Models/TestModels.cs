@@ -39,7 +39,10 @@ public record ScoreResult
     public double HalUsage { get; init; }
     public double SourceCitation { get; init; }
     public double Format { get; init; }
-    public double Overall => (Accuracy + Completeness + HalUsage + SourceCitation + Format) / 5;
+    // Prioritize correct answers: Accuracy (50%) + Completeness (25%) + Format (15%) + Best of HAL/Source (10%)
+    // Focus on getting the right answer rather than observable process
+    public double Overall => (Accuracy * 0.5) + (Completeness * 0.25) + (Format * 0.15) + 
+                           (Math.Max(HalUsage, SourceCitation) * 0.1);
 }
 
 public record TestResults(List<TestResult> Results)

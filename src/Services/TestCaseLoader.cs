@@ -31,8 +31,24 @@ public static class TestCaseLoader
             Description = "Test if model follows llms.txt structured approach",
             ExpectedCriteria = new TestCriteria
             {
-                RequiredKeywords = new() { "JSON", "structured", "HAL", "index.json", "history" },
+                RequiredKeywords = new() { "JSON", "structured", "HAL", "index.json", "archives" },
                 RequiredUrls = new() { "llms.txt" },
+                ShouldUseHalNavigation = true,
+                ShouldCiteJsonSources = true
+            }
+        },
+
+        // Test stable SDK download links
+        new TestCase
+        {
+            Id = "sdk_001",
+            Category = "SDK Downloads",
+            Prompt = "What is the stable download URL for .NET 8 SDK for Linux x64?",
+            Description = "Test stable SDK download link navigation using templated URLs",
+            ExpectedCriteria = new TestCriteria
+            {
+                RequiredKeywords = new() { "https://aka.ms/dotnet/8.0/dotnet-sdk-linux-x64.tar.gz", "8.0", "Linux", "x64", "SDK" },
+                RequiredUrls = new() { "8.0/sdk/sdk.json" },
                 ShouldUseHalNavigation = true,
                 ShouldCiteJsonSources = true
             }

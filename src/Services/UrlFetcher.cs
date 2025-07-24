@@ -11,10 +11,11 @@ public static class UrlFetcher
         // Look for patterns like "Please fetch the content from [URL]"
         var patterns = new[]
         {
-            @"Please fetch (?:the )?content from (https?://[^\s\)]+)",
-            @"Please fetch (?:the )?(?:data|information) from (https?://[^\s\)]+)",
-            @"fetch (?:the )?content from:?\s*(https?://[^\s\)]+)",
-            @"I need (?:the )?(?:data|content) from (https?://[^\s\)]+)"
+            @"Please fetch (?:the )?content from (https?://[^\s\)\*\""\u201c\u201d]+)",
+            @"Please fetch (?:the )?(?:data|information) from (https?://[^\s\)\*\""\u201c\u201d]+)",
+            @"fetch (?:the )?content from:?\s*(https?://[^\s\)\*\""\u201c\u201d]+)",
+            @"I need (?:the )?(?:data|content) from (https?://[^\s\)\*\""\u201c\u201d]+)",
+            @"from (https?://[^\s\)\*\""\u201c\u201d]+)"
         };
         
         var urls = new List<string>();
@@ -23,7 +24,7 @@ public static class UrlFetcher
             var matches = Regex.Matches(response, pattern, RegexOptions.IgnoreCase);
             foreach (Match match in matches)
             {
-                var url = match.Groups[1].Value.TrimEnd('.', ',', ')', ']');
+                var url = match.Groups[1].Value.TrimEnd('.', ',', ')', ']', '"', '*', '"', '"');
                 if (!urls.Contains(url))
                 {
                     urls.Add(url);
