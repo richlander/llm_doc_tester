@@ -62,3 +62,13 @@ public record ChatResponse(
 
 public record ChatChoice(
     [property: JsonPropertyName("message")] ChatMessage Message);
+
+// GitHub Models response types
+public record GitHubChatResponse(
+    [property: JsonPropertyName("choices")] GitHubChatChoice[] Choices);
+
+public record GitHubChatChoice(
+    [property: JsonPropertyName("message")] GitHubChatMessage Message);
+
+public record GitHubChatMessage(
+    [property: JsonPropertyName("content")] string Content);

@@ -1,0 +1,4 @@
+Timestamp,Model,TestId,Category,Prompt,Overall,Accuracy,Completeness,HalUsage,SourceCitation,Format,Duration,Success
+2025-07-24 21:42:13,anthropic/claude-3.5-sonnet,basic_001,Basic Info,What is the latest .NET LTS version?,0.970,1.000,1.000,0.700,0.700,1.000,10802,true
+2025-07-24 21:42:13,anthropic/claude-3.5-sonnet,llms_001,Guidelines Compliance,How should I find .NET security information according to the guidelines?,0.800,0.600,1.000,1.000,0.400,1.000,10569,true
+2025-07-24 21:42:13,anthropic/claude-3.5-sonnet,sdk_001,SDK Downloads,What is the stable download URL for .NET 8 SDK for Linux x64?,0.900,1.000,1.000,0.000,0.000,1.000,18879,true

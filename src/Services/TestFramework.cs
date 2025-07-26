@@ -6,10 +6,12 @@ public class DotNetReleaseTestFramework
 {
     private readonly OpenRouterClient _client;
     private readonly string[] _models;
+    private readonly string? _testsPath;
 
-    public DotNetReleaseTestFramework(HttpClient httpClient, string apiKey, string[]? models = null)
+    public DotNetReleaseTestFramework(HttpClient httpClient, string apiKey, string[]? models = null, string? testsPath = null)
     {
         _client = new OpenRouterClient(httpClient, apiKey);
+        _testsPath = testsPath;
         _models = models ?? new[]
         {
             "anthropic/claude-3.5-sonnet",
@@ -24,7 +26,7 @@ public class DotNetReleaseTestFramework
 
     public async Task<TestResults> RunTestSuiteAsync(bool includeAllModels = false)
     {
-        var testCases = TestCaseLoader.LoadTestCases();
+        var testCases = LoadTestCases();
         var results = new List<TestResult>();
         var modelsToTest = includeAllModels ? _models : new[] { _models[0] }; // Default to just Claude for faster testing
 
@@ -72,6 +74,29 @@ public class DotNetReleaseTestFramework
         }
 
         return new TestResults(results);
+    }
+
+    private List<TestCase> LoadTestCases()
+    {
+        if (!string.IsNullOrEmpty(_testsPath))
+        {
+            // Load from external path
+            Console.WriteLine($"Loading tests from: {_testsPath}");
+            return MarkdownTestLoader.LoadFromDirectory(_testsPath);
+        }
+        
+        // Load from default location
+        var markdownTests = MarkdownTestLoader.LoadFromDirectory("tests/dotnet-releases");
+        if (markdownTests.Count > 0)
+        {
+            return markdownTests;
+        }
+        
+        // If no markdown tests found, return empty list (no fallback to embedded tests)
+        Console.WriteLine("Warning: No test cases found. Use --tests to specify test directory.");
+        Console.WriteLine("Exiting with no tests to run.");
+        Environment.Exit(0);
+        return new List<TestCase>(); // Never reached
     }
 
     private async Task<TestResult> RunSingleTestAsync(string model, TestCase testCase)
@@ -145,7 +170,24 @@ public class DotNetReleaseTestFramework
         };
     }
 
-    private static string GetSystemPrompt() => """
+    private string GetSystemPrompt()
+    {
+        // Try to load custom system prompt from test config
+        if (!string.IsNullOrEmpty(_testsPath))
+        {
+            var customPrompt = MarkdownTestLoader.LoadSystemPromptFromConfig(_testsPath);
+            if (!string.IsNullOrEmpty(customPrompt))
+            {
+                Console.WriteLine("Using custom system prompt from test-config.md");
+                return customPrompt;
+            }
+        }
+        
+        // Default to release-notes system prompt
+        return GetDefaultSystemPrompt();
+    }
+    
+    private static string GetDefaultSystemPrompt() => """
         You are an AI assistant helping with .NET release information. 
         Use the structured data available at https://raw.githubusercontent.com/richlander/core/main/llms.txt
         
